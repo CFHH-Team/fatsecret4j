@@ -194,16 +194,27 @@ public class RequestBuilder {
 	 * 
 	 * @param query			search terms for querying food items
 	 * @param pageNumber	page Number to search the food items
+	 * @param region		results will be filtered to foods/products available in the region
+	 * @param language		responses will be in the specified language 
 	 * @return				rest url which will be sent to fatsecret platform server for searching food items
 	 * @throws Exception	if sign throws exception
 	 */
-	public String buildFoodsSearchUrl(String query, int pageNumber) throws Exception {
+	public String buildFoodsSearchUrl(String query, int pageNumber, Localization.Region region, Localization.Language language) throws Exception {
 		List<String> params = new ArrayList<String>(Arrays.asList(generateOauthParams()));
 		String[] template = new String[1];
 		params.add("method=foods.search");
 		params.add("max_results=50");
 		params.add("page_number=" + pageNumber);
 		params.add("search_expression=" + encode(query));
+		
+		if (region != null) {
+			params.add("region=" + encode(region.toString()));
+			
+			if (language != null) {
+				params.add("language=" + encode(language.toString()));
+			}			
+		}
+		
 		params.add("oauth_signature=" + sign(HTTP_METHOD, APP_URL, params.toArray(template)));
 
 		return APP_URL + "?" + paramify(params.toArray(template));

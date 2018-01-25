@@ -48,18 +48,18 @@ public class Request {
 	 * 
 	 * @param query			search terms for querying food items
 	 * @param pageNumber	page Number to search the food items
+	 * @param region		results will be filtered to foods/products available in the region
+	 * @param language		responses will be in the specified language
 	 * @return				food items at a particular page number based on the query
 	 */
-	public JSONObject searchFoods(String query, int pageNumber) {
+	public JSONObject searchFoods(String query, int pageNumber, Localization.Region region, Localization.Language language) {
 
 		try {
-			String apiUrl = builder.buildFoodsSearchUrl(query, pageNumber);
+			String apiUrl = builder.buildFoodsSearchUrl(query, pageNumber, region, language);
 			return getJSONResponse(apiUrl);
 		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
+			throw new RuntimeException(e);
 		}
-		
-		return null;
 	}
 
 	/**

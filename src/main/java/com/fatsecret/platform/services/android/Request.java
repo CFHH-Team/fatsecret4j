@@ -35,6 +35,7 @@ import com.fatsecret.platform.model.Food;
 import com.fatsecret.platform.model.Recipe;
 import com.fatsecret.platform.utils.FoodUtility;
 import com.fatsecret.platform.utils.RecipeUtility;
+import com.fatsecret.platform.services.Localization;
 import com.fatsecret.platform.services.RequestBuilder;
 import com.fatsecret.platform.services.Response;
 
@@ -95,7 +96,7 @@ public class Request {
 	public void searchFoods(RequestQueue queue, String query, int pageNumber) {
 
 		try {
-			String apiUrl = builder.buildFoodsSearchUrl(query, pageNumber);
+			String apiUrl = builder.buildFoodsSearchUrl(query, pageNumber, null, null);
 			getResponse(queue, apiUrl, Request.Method.SEARCH_FOODS);
 		} catch (Exception e) {
 			System.out.println("Exception: " + e.getMessage());

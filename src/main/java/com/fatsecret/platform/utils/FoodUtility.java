@@ -95,10 +95,14 @@ public class FoodUtility {
 	public static CompactFood parseCompactFoodFromJSONObject(JSONObject json) {
 		
 		String name = json.getString("food_name");
-		String url = json.getString("food_url");
 		String type = json.getString("food_type");
 		String description = json.getString("food_description");
 		Long id = Long.parseLong(json.getString("food_id"));
+		
+		String url = null;
+		if (json.has("food_url")) {
+			url = json.getString("food_url");
+		}
 
 		CompactFood food = new CompactFood();
 		

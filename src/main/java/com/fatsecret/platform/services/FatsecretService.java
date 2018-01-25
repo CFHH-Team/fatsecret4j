@@ -77,9 +77,32 @@ public class FatsecretService {
 	 * @return				food items at zeroth page based on the query
 	 */
 	public Response<CompactFood> searchFoods(String query) {
-		return searchFoods(query, 0);
+		return searchFoods(query, 0, null, null);
 	}
-
+	
+	/**
+	 * Returns response associated with the food items at zeroth page depending on the search query
+	 * 
+	 * @param query			search terms for querying food items
+	 * @param region		results will be filtered to foods/products available in the region
+	 * @return				food items at zeroth page based on the query
+	 */	
+	public Response<CompactFood> searchFoods(String query, Localization.Region region) {
+		return searchFoods(query, 0, region, null);
+	}		
+	
+	/**
+	 * Returns response associated with the food items at zeroth page depending on the search query
+	 * 
+	 * @param query			search terms for querying food items
+	 * @param region		results will be filtered to foods/products available in the region
+	 * @param language		responses will be in the specified language
+	 * @return				food items at zeroth page based on the query
+	 */
+	public Response<CompactFood> searchFoods(String query, Localization.Region region, Localization.Language language) {
+		return searchFoods(query, 0, region, language);
+	}
+	
 	/**
 	 * Returns response associated with the food items depending on the search query and page number
 	 * 
@@ -88,36 +111,64 @@ public class FatsecretService {
 	 * @return				food items at a particular page number based on the query
 	 */
 	public Response<CompactFood> searchFoods(String query, Integer pageNumber) {
-		JSONObject json = request.searchFoods(query, pageNumber);
+		return searchFoods(query, pageNumber, null, null);
+	}
+	
+	/**
+	 * Returns response associated with the food items depending on the search query and page number
+	 * 
+	 * @param query			search terms for querying food items
+	 * @param pageNumber	page Number to search the food items
+	 * @param region		results will be filtered to foods/products available in the region
+	 * @return				food items at a particular page number based on the query
+	 */
+	public Response<CompactFood> searchFoods(String query, Integer pageNumber, Localization.Region region) {
+		return searchFoods(query, pageNumber, region, null);
+	}	
 
-		try {
-			if(json != null) {
-				JSONObject foods = json.getJSONObject("foods");
-				
-				int maxResults = foods.getInt("max_results");
-				int totalResults = foods.getInt("total_results");
-				
-				List<CompactFood> results = new ArrayList<CompactFood>();
-				
-				if(totalResults > maxResults * pageNumber) {
-					JSONArray food = foods.getJSONArray("food");
-					results = FoodUtility.parseCompactFoodListFromJSONArray(food);
-				}
-				
-				Response<CompactFood> response = new Response<CompactFood>();
-				
-				response.setPageNumber(pageNumber);
-				response.setMaxResults(maxResults);
-				response.setTotalResults(totalResults);
-				response.setResults(results);
-				
-				return response;
-			}
-		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
-		}
+	/**
+	 * Returns response associated with the food items depending on the search query and page number
+	 * 
+	 * @param query			search terms for querying food items
+	 * @param pageNumber	page Number to search the food items
+	 * @param region		results will be filtered to foods/products available in the region
+	 * @param language		responses will be in the specified language
+	 * @return				food items at a particular page number based on the query
+	 */
+	public Response<CompactFood> searchFoods(String query, Integer pageNumber, Localization.Region region, Localization.Language language) {
+
+		JSONObject json = request.searchFoods(query, pageNumber, region, language);
 		
-		return null;
+		try {
+			JSONObject foods = json.getJSONObject("foods");
+			
+			int maxResults = foods.getInt("max_results");
+			int totalResults = foods.getInt("total_results");
+			
+			List<CompactFood> results = new ArrayList<CompactFood>();
+			
+			if(totalResults > maxResults * pageNumber) {
+				JSONArray food = foods.getJSONArray("food");
+				results = FoodUtility.parseCompactFoodListFromJSONArray(food);
+			}
+			
+			Response<CompactFood> response = new Response<CompactFood>();
+			
+			response.setPageNumber(pageNumber);
+			response.setMaxResults(maxResults);
+			response.setTotalResults(totalResults);
+			response.setResults(results);
+			
+			return response;
+		}
+		catch (RuntimeException e) {
+			String message = 
+				e.getMessage() 
+				+ System.lineSeparator() + "query = " + query 
+				+ System.lineSeparator() + "json = " + json; 
+			
+			throw new RuntimeException(message, e);
+		}
 	}	
 
 	/**
