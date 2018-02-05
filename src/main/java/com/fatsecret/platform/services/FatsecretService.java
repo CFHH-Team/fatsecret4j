@@ -187,4 +187,21 @@ public class FatsecretService {
 		}
 		return null;
 	}
+	
+	/**
+	 * Returns the food id which matches the barcode specified
+	 *
+	 * @param barcode		GTIN-13 string representing the barcode to find
+	 * @return				the food id which matches the barcode specified
+	 */	
+	public Long findIdForBarcode(String barcode) {
+		JSONObject json = request.findIdForBarcode(barcode);
+		
+		if (json != null) {
+			JSONObject foodId = json.getJSONObject("food_id");
+			return foodId.getLong("value");
+		}
+		
+		return null;
+	}
 }

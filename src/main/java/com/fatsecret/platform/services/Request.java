@@ -118,6 +118,22 @@ public class Request {
 	}
 	
 	/**
+	 * Returns the json object containing the food id which matches the barcode specified
+	 *
+	 * @param barcode		GTIN-13 string representing the barcode to find
+	 * @return				json object containing the food id which matches the barcode specified
+	 */	
+	public JSONObject findIdForBarcode(String barcode) {
+
+		try {
+			String apiUrl = builder.buildFindIdForBarcodeUrl(barcode);
+			return getJSONResponse(apiUrl);
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}	
+	
+	/**
 	 * Returns json object associated with the response from fatsecret api for given url
 	 *
 	 * @param apiUrl		the rest url which will be sent to fatsecret platform server
