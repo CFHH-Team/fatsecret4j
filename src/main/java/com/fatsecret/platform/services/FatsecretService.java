@@ -238,4 +238,32 @@ public class FatsecretService {
 		}
 		return null;
 	}
+
+	/**
+	 * Returns the food id which matches the barcode specified
+	 *
+	 * @param barcode		GTIN-13 string representing the barcode to find
+	 * @return				the food id which matches the barcode specified
+	 */	
+	public Long findIdForBarcode(String barcode) {
+		return findIdForBarcode(barcode, null);
+	}
+
+	/**
+	 * Returns the food id which matches the barcode specified
+	 *
+	 * @param barcode		GTIN-13 string representing the barcode to find
+	 * @param region		results will be filtered to foods/products available in the region 
+	 * @return				the food id which matches the barcode specified
+	 */	
+	public Long findIdForBarcode(String barcode, Localization.Region region) {
+		JSONObject json = request.findIdForBarcode(barcode, region);
+		
+		if (json != null) {
+			JSONObject foodId = json.getJSONObject("food_id");
+			return foodId.getLong("value");
+		}
+		
+		return null;
+	}
 }

@@ -273,4 +273,26 @@ public class RequestBuilder {
 
 		return APP_URL + "?" + paramify(params.toArray(template));
 	}
+	
+	/**
+	 * Returns the rest url which will be sent to fatsecret platform server for finding the food id
+	 *
+	 * @param barcode		GTIN-13 string representing the barcode to find
+	 * @return				the rest url which will be sent to fatsecret platform server for finding the food id
+	 * @throws Exception	if sign throws exception
+	 */	
+	public String buildFindIdForBarcodeUrl(String barcode, Localization.Region region) throws Exception  {
+		List<String> params = new ArrayList<String>(Arrays.asList(generateOauthParams()));
+		String[] template = new String[1];
+		params.add("method=food.find_id_for_barcode");
+		params.add("barcode=" + barcode);
+
+		if (region != null) {
+			params.add("region=" + encode(region.toString()));
+		}
+
+		params.add("oauth_signature=" + sign(HTTP_METHOD, APP_URL, params.toArray(template)));
+
+		return APP_URL + "?" + paramify(params.toArray(template));
+	}	
 }

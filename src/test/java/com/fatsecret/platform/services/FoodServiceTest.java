@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.fatsecret.platform.model.Food;
 
+
 public class FoodServiceTest {
 	private FatsecretService service;
 	
@@ -36,5 +37,19 @@ public class FoodServiceTest {
 	public void testGetFoodTypeBrand() {
 		Food food = service.getFood(1844450L);
 		assertEquals("Brand", food.getType());
+	}
+	
+	@Test
+	public void testFindIdForBarcode() {
+		String barcode = "009800895007";
+		Long foodId = service.findIdForBarcode(barcode);
+		assertEquals(3471554L, foodId.longValue());
+	}
+
+	@Test
+	public void testFindIdForLocalBarcode() {
+		String barcode = "01275926";
+		Long foodId = service.findIdForBarcode(barcode, Localization.Region.GB);
+		assertEquals(9656359L, foodId.longValue());
 	}
 }
